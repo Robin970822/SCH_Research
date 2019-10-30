@@ -13,3 +13,4 @@ def get_path(root=root, path='model'):
 
 scz_Data = get_path(path='scz_Data')
 data_path = get_path(path='data')
+model_path = get_path(path='model')

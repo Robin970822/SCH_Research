@@ -5,6 +5,8 @@ import scipy.io
 
 import numpy as np
 
+from sklearn.model_selection import train_test_split
+
 root = config.scz_Data
 data_path = config.data_path
 
@@ -46,9 +48,15 @@ def triu(person):
     return np.concatenate(temp)
 
 
+# save data
 def saveData(data, root=data_path, filename='default.npy'):
     path = os.path.join(root, filename)
     np.save(path, data)
+
+
+# load Data
+def loadData(root=data_path, filename='default.npy'):
+    return np.load(os.path.join(root, filename))
 
 
 if __name__ == '__main__':
@@ -60,7 +68,13 @@ if __name__ == '__main__':
     person = person[index]
     labels = labels[index]
     trius = [triu(a_person) for a_person in person]
+    x_train, x_test, y_train, y_test = train_test_split(
+        trius, labels, test_size=0.1)
 
     saveData(person, filename='person.npy')
     saveData(labels, filename='labels.npy')
     saveData(trius, filename='trius.npy')
+    saveData(x_train, filename='x_train.npy')
+    saveData(x_test, filename='x_test.npy')
+    saveData(y_train, filename='y_train.npy')
+    saveData(y_test, filename='y_test.npy')
