@@ -13,14 +13,15 @@ x_test = loadData(filename='x_test.npy')
 y_test = loadData(filename='y_test.npy')
 
 m, n = x_train.shape
+print('N_features:', n)
 # Training
 model = get_model(input_shape=n, output_shape=2, model_type='MLP')
-model.fit(x_train, y_train, epochs=1000, batch_size=64, validation_data=(
+model.fit(x_train, y_train, epochs=1500, batch_size=64, validation_data=(
     x_test, y_test), validation_freq=100, verbose=1)
 
 # Evaluate
 print('Evaluating...')
-print(model.score(x_test, y_test))
+model.evaluate(x_test, y_test)
 
 # Save Model
 print('Saving Model...')

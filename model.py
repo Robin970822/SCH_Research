@@ -12,7 +12,7 @@ def get_model(input_shape, output_shape, model_type='MLP'):
         model = tf.keras.models.Sequential([
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dense(4096, activation=tf.nn.relu),
-            tf.keras.layers.Dense(8192, activation=tf.nn.relu),
+            tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Dense(1024, activation=tf.nn.relu),
             tf.keras.layers.Dense(128, activation=tf.nn.relu),
             tf.keras.layers.Dense(32, activation=tf.nn.relu),

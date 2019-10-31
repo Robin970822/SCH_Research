@@ -68,6 +68,7 @@ if __name__ == '__main__':
     person = person[index]
     labels = labels[index]
     trius = [triu(a_person) for a_person in person]
+    W = loadData(filename='nmf.npy')
     x_train, x_test, y_train, y_test = train_test_split(
         trius, labels, test_size=0.1)
 
