@@ -6,16 +6,16 @@ import os
 
 model_path = config.model_path
 
-x_train = loadData(filename='x_train.npy')
+x_train = loadData(filename='train_encode.npy')
 y_train = loadData(filename='y_train.npy')
 
-x_test = loadData(filename='x_test.npy')
+x_test = loadData(filename='test_encode.npy')
 y_test = loadData(filename='y_test.npy')
 
 m, n = x_train.shape
 print('N_features:', n)
 # Training
-model = get_model(input_shape=n, output_shape=2, model_type='MLP')
+model = get_model(input_shape=n, output_shape=2)
 model.fit(x_train, y_train, epochs=1500, batch_size=64, validation_data=(
     x_test, y_test), validation_freq=100, verbose=1)
 

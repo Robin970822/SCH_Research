@@ -1,6 +1,5 @@
 import tensorflow as tf
-
-from data import loadData
+from data import loadData, saveData
 
 x_train = loadData(filename='x_train.npy')
 y_train = loadData(filename='y_train.npy')
@@ -21,7 +20,6 @@ n_input = 4371  # MNIST data input (28*28)
 
 # tf Graph input (only pictures)
 X = tf.placeholder("float", [None, n_input])
-Y = tf.placeholder("int64", [None, ])
 
 # hidden layer settings
 n_hidden_1 = 256  # 1st layer num features
@@ -37,10 +35,6 @@ weights = {
     # 'decoder_h1': tf.Variable(tf.random_normal([n_hidden_4, n_hidden_3])),
     'decoder_h2': tf.Variable(tf.random_normal([n_hidden_3, n_hidden_1])),
     'decoder_h3': tf.Variable(tf.random_normal([n_hidden_1, n_input])),
-
-    'classifier_h1': tf.Variable(tf.random_normal([n_hidden_4, 64])),
-    'classifier_h2': tf.Variable(tf.random_normal([64, 16])),
-    'classifier_h3': tf.Variable(tf.random_normal([16, 2])),
 }
 bias = {
     'encoder_b1': tf.Variable(tf.random_normal([n_hidden_1])),
@@ -51,9 +45,6 @@ bias = {
     'decoder_b1': tf.Variable(tf.random_normal([n_hidden_3])),
     'decoder_b2': tf.Variable(tf.random_normal([n_hidden_1])),
     'decoder_b3': tf.Variable(tf.random_normal([n_input])),
-
-    'classifier_b1': tf.Variable(tf.random_normal([64])),
-    'classifier_b2': tf.Variable(tf.random_normal([16])),
 }
 
 
@@ -63,8 +54,8 @@ def encoder(x):
                                 bias['encoder_b1']))
     layer_2 = tf.nn.relu(tf.add(tf.matmul(layer_1, weights['encoder_h2']),
                                 bias['encoder_b2']))
-    # layer_3 = tf.nn.sigmoid(tf.add(tf.matmul(layer_2, weights['encoder_h3']),
-    #                                bias['encoder_b3']))
+    # layer_3 = tf.nn.softmax(tf.add(tf.matmul(layer_2, weights['encoder_h3']),
+    #                             bias['encoder_b3']))
     # layer_4 = tf.nn.softmax(tf.add(tf.matmul(layer_3, weights['encoder_h4']),
     #                                bias['encoder_b4']))
     return layer_2
@@ -81,20 +72,9 @@ def decoder(x):
     return layer_3
 
 
-# Build the classifier
-def classifier(x):
-    layer_1 = tf.nn.sigmoid(tf.add(tf.matmul(x, weights['classifier_h1']),
-                                   bias['classifier_b1']))
-    layer_2 = tf.nn.sigmoid(tf.add(tf.matmul(layer_1, weights['classifier_h2']),
-                                   bias['classifier_b2']))
-    layer_3 = tf.matmul(layer_2, weights['classifier_h3'])
-    return layer_3
-
-
 # Construct model
 encoder_op = encoder(X)
 decoder_op = decoder(encoder_op)
-classifier_op = classifier(encoder_op)
 
 # Prediction
 y_pred = decoder_op
@@ -105,24 +85,19 @@ y_true = X
 loss = tf.reduce_mean(tf.pow(y_true - y_pred, 2))
 optimizer = tf.train.AdamOptimizer(0.01).minimize(loss)
 
-clf_y_pred = classifier_op
-clf_y_true = Y
-loss_clf = tf.losses.sparse_softmax_cross_entropy(clf_y_true, clf_y_pred)
-acc = tf.reduce_mean(
-    tf.cast(tf.equal(tf.argmax(clf_y_pred, 1), clf_y_true), tf.float32))
-optimizer_clf = tf.train.AdamOptimizer(0.01).minimize(loss_clf)
-
 # Initializing the variables
 init = tf.global_variables_initializer()
 
 # Launch the graph
-sess = tf.Session()
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+sess = tf.Session(config=config)
 sess.run(init)
 total_batch = int(len(x_train) / batch_size)
 # Training cycle
-for phrase in range(5):
+for phrase in range(10):
     print('Traing Autoencoder')
-    for epoch in range(2000):
+    for epoch in range(1000):
         # Loop over all batches
         for i in range(total_batch):
             batch_xs = x_train[i * batch_size: (
@@ -132,18 +107,8 @@ for phrase in range(5):
         if epoch % 100 == 0:
             print("Iteration: %04d " % (epoch), "loss=", "{:.9f}".format(c))
 
-    print('Triang CLF')
-    for epoch in range(2000):
-        # Loop over all batches
-        for i in range(total_batch):
-            batch_xs = x_train[i * batch_size: (
-                i+1) * batch_size] if i < total_batch else x_train[i * batch_size: len(x_train)]
-            batch_ys = y_train[i * batch_size: (
-                i+1) * batch_size] if i < total_batch else y_train[i * batch_size: len(y_train)]
-            # Run
-            _, c = sess.run([optimizer_clf, loss_clf],
-                            feed_dict={X: batch_xs, Y: batch_ys})
-        if epoch % 100 == 0:
-            a = sess.run(acc, feed_dict={X: x_test, Y: y_test})
-            print("Iteration: %04d " % (epoch), "loss=",
-                  "{:.9f} acc {:.9f}".format(c, a))
+print(sess.run(encoder_op, feed_dict={X: x_test})[0])
+train_encode = sess.run(encoder_op, feed_dict={X: x_train})
+test_encode = sess.run(encoder_op, feed_dict={X: x_test})
+saveData(train_encode, filename='train_encode')
+saveData(test_encode, filename='test_encode')
