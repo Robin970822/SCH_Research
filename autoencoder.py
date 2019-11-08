@@ -24,7 +24,7 @@ X = tf.placeholder("float", [None, n_input])
 # hidden layer settings
 n_hidden_1 = 256  # 1st layer num features
 n_hidden_2 = 128  # 2nd layer num features
-n_hidden_3 = 128
+n_hidden_3 = 32
 n_hidden_4 = 128
 weights = {
     'encoder_h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])),
