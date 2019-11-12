@@ -2,7 +2,7 @@ import os
 
 
 root = './'
-
+seed = 2019
 
 def get_path(root=root, path='model'):
     model_path = os.path.join(root, path)

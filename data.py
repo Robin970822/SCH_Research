@@ -6,6 +6,7 @@ import scipy.io
 import numpy as np
 
 from sklearn.model_selection import train_test_split
+from ensemble import feature_select
 
 root = config.scz_Data
 data_path = config.data_path
@@ -69,6 +70,7 @@ if __name__ == '__main__':
     labels = labels[index]
     trius = [triu(a_person) for a_person in person]
     W = loadData(filename='nmf.npy')
+    X = feature_select(trius, labels)
     x_train, x_test, y_train, y_test = train_test_split(
         trius, labels, test_size=0.1)
 
@@ -79,3 +81,4 @@ if __name__ == '__main__':
     saveData(x_test, filename='x_test.npy')
     saveData(y_train, filename='y_train.npy')
     saveData(y_test, filename='y_test.npy')
+    saveData(X, filename='feature.npy')
