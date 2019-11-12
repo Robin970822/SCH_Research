@@ -6,7 +6,7 @@ import scipy.io
 import numpy as np
 
 from sklearn.model_selection import train_test_split
-from ensemble import feature_select
+from utils import feature_select
 
 root = config.scz_Data
 data_path = config.data_path
