@@ -82,8 +82,8 @@ def cross_val_ensemble(X, y, generator=KFold(10)):
 
 
 if __name__ == '__main__':
-    trius = loadData('trius.npy')
-    labels = loadData('label.npy')
+    trius = loadData(filename='trius.npy')
+    labels = loadData(filename='labels.npy')
     X = feature_select(trius, labels)
     y = labels
 

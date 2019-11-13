@@ -1,7 +1,7 @@
 import os
 
 
-root = './'
+root = os.path.abspath('./')
 seed = 2019
 
 def get_path(root=root, path='model'):
