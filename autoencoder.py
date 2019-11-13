@@ -1,11 +1,12 @@
 from sklearn.model_selection import train_test_split
 from data import loadData
+import tensorflow as tf
 import numpy as np
 import config
 
 seed = config.seed
-F = np.load('feature.npy')
-l = np.load('labels.npy')
+F = loadData(filename='feature.npy')
+l = loadData(filename='labels.npy')
 x_train, x_test, y_train, y_test = train_test_split(
     F, l, test_size=0.1, random_state=seed)
 
