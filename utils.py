@@ -140,3 +140,19 @@ def score_models(P, y):
     for m in P.columns:
         score = accuracy_score(y, np.float32(P.loc[:, m] >= 0.5))
         print("%-26s: %.3f" % (m, score))
+
+
+def cross_val_models(model_list, cv=10):
+    P = np.zeros((cv, len(model_list)))
+    P = pd.DataFrame(P)
+
+    print('Fitting models...')
+    cols = list()
+    for i, (name, m) in enumerate(model_list.items()):
+        print("%s..." % name, end=" ", flush=False)
+        P.iloc[:, i] = cross_val_score(m, X, y, cv=cv)
+        cols.append(name)
+        print("done")
+    P.columns = cols
+    print('Done.\n')
+    return P

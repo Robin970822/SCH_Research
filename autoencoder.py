@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split
-from data import loadData
+from data import loadData, saveData
 import tensorflow as tf
 import numpy as np
 import config
@@ -136,3 +136,6 @@ for epoch in range(training_epoch):
         l = sess.run(loss, feed_dict={X: x_test})
         print("Iteration: %04d " % (epoch), "loss=",
               "{:.9f} acc {:.9f} decode loss {:.9f}".format(c, a, l))
+
+code = sess.run(encoder_op, feed_dict={X: F})
+saveData(code, filename='code.npy')
