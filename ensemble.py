@@ -101,7 +101,7 @@ if __name__ == '__main__':
     print("Super Learner ACC score: %.3f" %
           accuracy_score(y_test, np.float32(p_sl[:, 1] >= 0.5)))
 
-    model,  cv_scores = cross_val_ensemble(X, y)
+    model, cv_scores = cross_val_ensemble(X, y)
 
     acc = [i['acc'] for i in cv_scores]
     recall = [i['recall'] for i in cv_scores]

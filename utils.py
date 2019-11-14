@@ -1,6 +1,6 @@
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_selection import VarianceThreshold, SelectKBest, SelectFromModel, chi2
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, cross_val_score
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.decomposition import PCA
 from sklearn.metrics import roc_auc_score, roc_curve, accuracy_score
@@ -142,7 +142,7 @@ def score_models(P, y):
         print("%-26s: %.3f" % (m, score))
 
 
-def cross_val_models(model_list, cv=10):
+def cross_val_models(model_list, X, y, cv=10):
     P = np.zeros((cv, len(model_list)))
     P = pd.DataFrame(P)
 

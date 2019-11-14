@@ -4,6 +4,7 @@ import os
 root = os.path.abspath('./')
 seed = 2019
 
+
 def get_path(root=root, path='model'):
     model_path = os.path.join(root, path)
     if not os.path.exists(model_path):

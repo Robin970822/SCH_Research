@@ -1,14 +1,13 @@
 from sklearn.model_selection import train_test_split
 from data import loadData, saveData
 import tensorflow as tf
-import numpy as np
 import config
 
 seed = config.seed
 F = loadData(filename='feature.npy')
-l = loadData(filename='labels.npy')
+labels = loadData(filename='labels.npy')
 x_train, x_test, y_train, y_test = train_test_split(
-    F, l, test_size=0.1, random_state=seed)
+    F, labels, test_size=0.1, random_state=seed)
 
 # Visualize decoder setting
 # Parameters
@@ -114,7 +113,7 @@ for epoch in range(training_epoch * 2):
     # Loop over all batches
     for i in range(total_batch):
         batch_xs = x_train[i * batch_size: (
-            i+1) * batch_size] if i < total_batch else x_train[i * batch_size: len(x_train)]
+            i + 1) * batch_size] if i < total_batch else x_train[i * batch_size: len(x_train)]
         # Run
         _, c = sess.run([optimizer, loss], feed_dict={X: batch_xs})
     if epoch % display_step == 0:
@@ -125,17 +124,17 @@ for epoch in range(training_epoch):
     # Loop over all batches
     for i in range(total_batch):
         batch_xs = x_train[i * batch_size: (
-            i+1) * batch_size] if i < total_batch else x_train[i * batch_size: len(x_train)]
+            i + 1) * batch_size] if i < total_batch else x_train[i * batch_size: len(x_train)]
         batch_ys = y_train[i * batch_size: (
-            i+1) * batch_size] if i < total_batch else y_train[i * batch_size: len(y_train)]
+            i + 1) * batch_size] if i < total_batch else y_train[i * batch_size: len(y_train)]
         # Run
         _, c = sess.run([optimizer_clf, loss_clf],
                         feed_dict={X: batch_xs, Y: batch_ys})
     if epoch % display_step == 0:
         a = sess.run(acc, feed_dict={X: x_test, Y: y_test})
-        l = sess.run(loss, feed_dict={X: x_test})
+        mse = sess.run(loss, feed_dict={X: x_test})
         print("Iteration: %04d " % (epoch), "loss=",
-              "{:.9f} acc {:.9f} decode loss {:.9f}".format(c, a, l))
+              "{:.9f} acc {:.9f} decode loss {:.9f}".format(c, a, mse))
 
 code = sess.run(encoder_op, feed_dict={X: F})
 saveData(code, filename='code.npy')
