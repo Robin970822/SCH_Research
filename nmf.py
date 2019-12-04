@@ -3,7 +3,7 @@ from data import loadData, saveData
 import numpy as np
 
 
-# 个人认为最重要的参数是n_components、alpha、l1_ratio、solver
+# 最重要的参数是n_components、alpha、l1_ratio、solver
 nmf = NMF(n_components=128,  # k value,默认会保留全部特征
           # W H 的初始化方法，'random' | 'nndsvd'(默认) |  'nndsvda' | 'nndsvdar' | 'custom',
           init=None,

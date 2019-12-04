@@ -22,7 +22,7 @@ def getPerson(filename='aal2_266.mat'):
 
 
 # 获得标签
-def getLabel(filename='all_cov.mat'):
+def getLabel(filename='all_cov.mat', type=0):
     all_cov = scipy.io.loadmat(os.path.join(root, filename))
     all_cov = all_cov['all_cov']
     labels = all_cov[:, 0]
@@ -63,11 +63,15 @@ def loadData(root=data_path, filename='default.npy'):
 if __name__ == '__main__':
     person = getPerson()
     labels = getLabel()
+    sex = getLabel(type=1)
+    age = getLabel(type=2)
     fds = getFD()
 
     index = select(labels, fds)
     person = person[index]
     labels = labels[index]
+    sex = sex[index]
+    age = age[index]
     trius = [triu(a_person) for a_person in person]
     W = loadData(filename='nmf.npy')
     X = feature_select(trius, labels)
@@ -76,6 +80,8 @@ if __name__ == '__main__':
 
     saveData(person, filename='person.npy')
     saveData(labels, filename='labels.npy')
+    saveData(sex, filename='sex.npy')
+    saveData(age, filename='age.npy')
     saveData(trius, filename='trius.npy')
     saveData(x_train, filename='x_train.npy')
     saveData(x_test, filename='x_test.npy')
